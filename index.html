@@ -112,9 +112,11 @@
     position:relative;
     z-index:2;
     width:100%;
+    max-width:100%;
     text-align:center;
     padding:0 20px;
-    overflow:hidden;
+    overflow-x:hidden;
+    box-sizing:border-box;
   }
   .hero-eyebrow{
     font-size:12px;
@@ -126,17 +128,22 @@
   .hero-title{
     font-family:var(--display);
     font-weight:900;
-    font-size:min(142px, 15vw, 17vh);
+    font-size:11vw;
     line-height:0.9;
     letter-spacing:-0.02em;
     text-transform:uppercase;
+    width:100%;
     max-width:100%;
+    overflow-x:hidden;
+    box-sizing:border-box;
     word-break:keep-all;
     overflow-wrap:normal;
+    white-space:nowrap;
+    display:inline-block;
+    transform-origin:center;
   }
-  @media (max-width:767px){
-    .hero-title{ font-size:min(52px, 12.5vw); letter-spacing:-0.01em; }
-    .hero-content{ padding:0 28px; }
+  @media (min-width:700px){
+    .hero-title{ font-size:min(142px, 13vw, 17vh); }
   }
   .hero-sub{
     font-size:13px;
@@ -545,7 +552,30 @@
       btn.classList.add('active');
     });
   });
+
+  // ---- Hero title guaranteed-fit (works regardless of font/engine/device) ----
+  // Measures actual rendered width vs available space and scales down with
+  // transform if needed. transform:scale shrinks the painted box itself,
+  // so it CANNOT visually overflow afterward, unlike font-size tricks.
+  function fitHeroTitle(){
+    const title = document.querySelector('.hero-title');
+    const wrap = document.querySelector('.hero-content');
+    if(!title || !wrap) return;
+    title.style.transform = 'none';
+    const available = wrap.clientWidth;
+    const actual = title.scrollWidth;
+    if(actual > available){
+      const scale = (available / actual) * 0.97; // 3% safety margin
+      title.style.transform = `scale(${scale})`;
+    }
+  }
+  window.addEventListener('load', fitHeroTitle);
+  window.addEventListener('resize', fitHeroTitle);
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(fitHeroTitle);
+  }
+  fitHeroTitle();
 </script>
 
 </body>
-</html>
+</html>e
