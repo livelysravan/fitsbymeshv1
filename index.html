@@ -1,833 +1,551 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FITSBYMESH</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Space+Grotesk:wght@400;500&display=swap"
-        rel="stylesheet">
-    <style>
-        :root {
-            --black: #0a0a0a;
-            --offwhite: #f5f5f2;
-            --grey: #8c8c8c;
-            --line: rgba(245, 245, 242, 0.16);
-            --display: "Unbounded", "Helvetica Neue", Arial, sans-serif;
-            --mono: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FITSBYMESH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0a0a0a;
+    --offwhite:#f5f5f2;
+    --grey:#8c8c8c;
+    --line: rgba(245,245,242,0.16);
+    --display: "Unbounded", "Helvetica Neue", Arial, sans-serif;
+    --mono: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+  }
 
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--black);
+    color:var(--offwhite);
+    font-family:var(--mono);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{ color:inherit; text-decoration:none; }
+  img{ display:block; max-width:100%; }
+  button{ font-family:inherit; cursor:pointer; }
+  ::selection{ background:var(--offwhite); color:var(--black); }
+  :focus-visible{ outline:2px solid var(--offwhite); outline-offset:3px; }
 
-        html {
-            scroll-behavior: smooth;
-        }
+  .wrap{ max-width:1400px; margin:0 auto; padding:0 32px; }
 
-        body {
-            background: var(--black);
-            color: var(--offwhite);
-            font-family: var(--mono);
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-        }
+  /* ---------- gothic signature mark (dagger) ---------- */
+  .mark{ display:inline-block; font-family:var(--display); font-weight:700; }
+  .mark-row{ display:flex; align-items:center; justify-content:center; gap:14px; color:var(--offwhite); font-size:14px; }
 
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
+  /* ---------- nav ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0;
+    z-index:100;
+    background:var(--black);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{ display:flex; align-items:center; justify-content:space-between; height:64px; }
+  .nav-left, .nav-right{ display:flex; align-items:center; gap:22px; }
+  .nav-burger{ background:none; border:none; color:var(--offwhite); display:flex; flex-direction:column; gap:5px; padding:6px; }
+  .nav-burger span{ width:20px; height:1.5px; background:var(--offwhite); display:block; }
+  .nav-logo{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:18px;
+    letter-spacing:0.04em;
+  }
+  .nav-links{ display:flex; gap:30px; font-size:12.5px; letter-spacing:0.08em; text-transform:uppercase; }
+  .nav-links a{ position:relative; padding-bottom:4px; }
+  .nav-links a::after{
+    content:""; position:absolute; left:0; bottom:0; width:0; height:1px;
+    background:var(--offwhite); transition:width 0.25s ease;
+  }
+  .nav-links a:hover::after{ width:100%; }
+  .icon-btn{ background:none; border:none; color:var(--offwhite); width:20px; height:20px; display:flex; align-items:center; justify-content:center; }
+  @media (max-width: 860px){ .nav-links{ display:none; } }
 
-        img {
-            display: block;
-            max-width: 100%;
-        }
-
-        button {
-            font-family: inherit;
-            cursor: pointer;
-        }
-
-        ::selection {
-            background: var(--offwhite);
-            color: var(--black);
-        }
-
-        :focus-visible {
-            outline: 2px solid var(--offwhite);
-            outline-offset: 3px;
-        }
-
-        .wrap {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 32px;
-        }
-
-        /* ---------- gothic signature mark (dagger) ---------- */
-        .mark {
-            display: inline-block;
-            font-family: var(--display);
-            font-weight: 700;
-        }
-
-        .mark-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            color: var(--offwhite);
-            font-size: 14px;
-        }
-
-        /* ---------- nav ---------- */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            background: var(--black);
-            border-bottom: 1px solid var(--line);
-        }
-
-        .nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 64px;
-        }
-
-        .nav-left,
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 22px;
-        }
-
-        .nav-burger {
-            background: none;
-            border: none;
-            color: var(--offwhite);
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            padding: 6px;
-        }
-
-        .nav-burger span {
-            width: 20px;
-            height: 1.5px;
-            background: var(--offwhite);
-            display: block;
-        }
-
-        .nav-logo {
-            font-family: var(--display);
-            font-weight: 700;
-            font-size: 18px;
-            letter-spacing: 0.04em;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            font-size: 12.5px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        .nav-links a {
-            position: relative;
-            padding-bottom: 4px;
-        }
-
-        .nav-links a::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 0;
-            height: 1px;
-            background: var(--offwhite);
-            transition: width 0.25s ease;
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        .icon-btn {
-            background: none;
-            border: none;
-            color: var(--offwhite);
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        @media (max-width: 860px) {
-            .nav-links {
-                display: none;
-            }
-        }
-
-        /* ============================================================
+  /* ============================================================
      HERO BACKGROUND IMAGE — EDIT HERE
      1) Drop your image file into the /images folder next to this
         HTML file (e.g. images/hero.jpg).
      2) Change the url() below to match your filename.
      3) If no image is set, it falls back to the dark gradient.
      ============================================================ */
-        .hero-bg {
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(180deg, rgba(8, 8, 8, 0.35) 0%, rgba(8, 8, 8, 0.55) 55%, rgba(8, 8, 8, 0.92) 100%),
-                url("images/ayshuv1.jpg");
-            /* <-- put your image filename here */
-            background-size: cover;
-            background-position: center 18%;
-            background-repeat: no-repeat;
-            background-color: #101010;
-            /* fallback color if image missing */
-            z-index: 0;
-        }
+  .hero-bg{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(180deg, rgba(8,8,8,0.35) 0%, rgba(8,8,8,0.55) 55%, rgba(8,8,8,0.92) 100%),
+      url("images/ayshuv1.jpg");                 /* <-- put your image filename here */
+    background-size:cover;
+    background-position:center 18%;
+    background-repeat:no-repeat;
+    background-color:#101010;                 /* fallback color if image missing */
+    z-index:0;
+  }
+  /* fallback texture, sits under the image, shows through if hero.jpg is absent/transparent */
+  .hero-bg-fallback{
+    position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 90% 60% at 50% 18%, rgba(255,255,255,0.05), transparent 60%),
+      linear-gradient(180deg, #050505 0%, #121212 55%, #050505 100%);
+    z-index:-1;
+  }
 
-        /* fallback texture, sits under the image, shows through if hero.jpg is absent/transparent */
-        .hero-bg-fallback {
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(ellipse 90% 60% at 50% 18%, rgba(255, 255, 255, 0.05), transparent 60%),
-                linear-gradient(180deg, #050505 0%, #121212 55%, #050505 100%);
-            z-index: -1;
-        }
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;
+    height:100vh;
+    height:100dvh;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    overflow:hidden;
+    padding-top:64px;
+    padding-bottom:160px;
+  }
+  .hero-content{
+    position:relative;
+    z-index:2;
+    width:100%;
+    text-align:center;
+    padding:0 20px;
+    overflow:hidden;
+  }
+  .hero-eyebrow{
+    font-size:12px;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:var(--grey);
+    margin-bottom:24px;
+  }
+  .hero-title{
+    font-family:var(--display);
+    font-weight:900;
+    font-size:min(142px, 15vw, 17vh);
+    line-height:0.9;
+    letter-spacing:-0.02em;
+    text-transform:uppercase;
+    max-width:100%;
+    word-break:keep-all;
+    overflow-wrap:normal;
+  }
+  @media (max-width:767px){
+    .hero-title{ font-size:min(52px, 12.5vw); letter-spacing:-0.01em; }
+    .hero-content{ padding:0 28px; }
+  }
+  .hero-sub{
+    font-size:13px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--grey);
+    margin-top:22px;
+  }
+  .hero-marks{ margin-top:20px; font-size:18px; }
 
-        /* ---------- hero ---------- */
-        .hero {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            overflow: hidden;
-            padding-top: 64px;
-            padding-bottom: 160px;
-        }
+  .hero-scroll{
+    position:absolute;
+    bottom:28px; left:50%;
+    transform:translateX(-50%);
+    z-index:2;
+    font-size:11px;
+    letter-spacing:0.22em;
+    color:var(--grey);
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+    text-transform:uppercase;
+  }
+  .hero-scroll-line{
+    width:1px; height:34px;
+    background:linear-gradient(to bottom, var(--grey), transparent);
+    animation:scrollpulse 2.2s ease-in-out infinite;
+  }
+  @keyframes scrollpulse{ 0%,100%{ opacity:0.3; } 50%{ opacity:1; } }
 
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            text-align: center;
-            padding: 0 20px;
-            overflow: hidden;
-        }
+  /* ---------- collections ---------- */
+  .collections{ padding:120px 0 0; }
 
-        .hero-eyebrow {
-            font-size: 12px;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: var(--grey);
-            margin-bottom: 24px;
-        }
+  .col-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:40px;
+    gap:20px;
+    flex-wrap:wrap;
+  }
+  .col-title{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:clamp(28px, 4vw, 46px);
+    text-transform:uppercase;
+    line-height:1;
+  }
+  .col-count{
+    font-size:12px;
+    letter-spacing:0.1em;
+    color:var(--grey);
+    text-transform:uppercase;
+  }
 
-        .hero-title {
-            font-family: var(--display);
-            font-weight: 900;
-            font-size: min(142px, 16vw, 17vh);
-            line-height: 0.9;
-            letter-spacing: -0.02em;
-            text-transform: uppercase;
-            max-width: 100%;
-            word-break: keep-all;
-            overflow-wrap: normal;
-            white-space: nowrap;
-        }
+  .filter-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:48px;
+    flex-wrap:wrap;
+  }
+  .filter-pill{
+    border:1px solid var(--line);
+    background:transparent;
+    color:var(--offwhite);
+    font-size:11.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding:9px 18px;
+    border-radius:999px;
+    transition:background 0.2s ease, color 0.2s ease;
+  }
+  .filter-pill.active, .filter-pill:hover{
+    background:var(--offwhite);
+    color:var(--black);
+  }
 
-        @media (max-width:480px) {
-            .hero-title {
-                font-size: min(52px, 13vw);
-                white-space: normal;
-                letter-spacing: -0.01em;
-            }
+  .shop-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:2px;
+    background:var(--line);
+  }
+  .product{ position:relative; background:var(--black); }
+  .product-frame{
+    position:relative;
+    aspect-ratio:3/4;
+    background:#141414;
+    overflow:hidden;
+  }
+  .product-frame .ph-figure{ position:absolute; inset:0; opacity:0.55; display:flex; align-items:center; justify-content:center; }
+  .product-frame .ph-figure svg{ width:60%; height:60%; }
+  .product-frame img{ width:100%; height:100%; object-fit:cover; filter:grayscale(1); transition:transform .5s ease; }
+  .product:hover .product-frame img{ transform:scale(1.045); }
 
-            .hero-content {
-                padding: 0 28px;
-            }
-        }
+  .product-badge{
+    position:absolute; top:12px; left:12px;
+    font-size:10px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    background:var(--offwhite);
+    color:var(--black);
+    padding:5px 11px;
+    border-radius:999px;
+    z-index:2;
+  }
+  .product-info{
+    padding:14px 16px 22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:12px;
+  }
+  .product-name{ font-size:13px; letter-spacing:0.01em; }
+  .product-price{ font-size:13px; color:var(--grey); white-space:nowrap; }
 
-        .hero-sub {
-            font-size: 13px;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: var(--grey);
-            margin-top: 22px;
-        }
+  @media (max-width:980px){
+    .shop-grid{ grid-template-columns:repeat(2,1fr); }
+  }
 
-        .hero-marks {
-            margin-top: 20px;
-            font-size: 18px;
-        }
+  .collections-end{
+    text-align:center;
+    padding:64px 0 90px;
+  }
+  .collections-end .mark{ font-size:20px; }
 
-        .hero-scroll {
-            position: absolute;
-            bottom: 28px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2;
-            font-size: 11px;
-            letter-spacing: 0.22em;
-            color: var(--grey);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            text-transform: uppercase;
-        }
+  /* ---------- footer ---------- */
+  footer{ border-top:1px solid var(--line); padding:48px 0 36px; }
+  .footer-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:18px;
+  }
+  .footer-logo{ font-family:var(--display); font-weight:700; font-size:16px; letter-spacing:0.04em; text-transform:uppercase; }
+  .footer-links{ display:flex; gap:26px; font-size:12px; letter-spacing:0.06em; text-transform:uppercase; color:var(--grey); }
+  .footer-links a:hover{ color:var(--offwhite); }
+  .footer-bottom{
+    margin-top:32px;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:11px;
+    letter-spacing:0.06em;
+    color:var(--grey);
+    text-transform:uppercase;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  @media (max-width:600px){
+    .footer-links{ gap:16px; flex-wrap:wrap; }
+  }
 
-        .hero-scroll-line {
-            width: 1px;
-            height: 34px;
-            background: linear-gradient(to bottom, var(--grey), transparent);
-            animation: scrollpulse 2.2s ease-in-out infinite;
-        }
+  /* reveal-on-scroll */
+  .reveal{ opacity:0; transform:translateY(20px); transition:opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
 
-        @keyframes scrollpulse {
-
-            0%,
-            100% {
-                opacity: 0.3;
-            }
-
-            50% {
-                opacity: 1;
-            }
-        }
-
-        /* ---------- collections ---------- */
-        .collections {
-            padding: 120px 0 0;
-        }
-
-        .col-head {
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
-            margin-bottom: 40px;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .col-title {
-            font-family: var(--display);
-            font-weight: 700;
-            font-size: clamp(28px, 4vw, 46px);
-            text-transform: uppercase;
-            line-height: 1;
-        }
-
-        .col-count {
-            font-size: 12px;
-            letter-spacing: 0.1em;
-            color: var(--grey);
-            text-transform: uppercase;
-        }
-
-        .filter-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 48px;
-            flex-wrap: wrap;
-        }
-
-        .filter-pill {
-            border: 1px solid var(--line);
-            background: transparent;
-            color: var(--offwhite);
-            font-size: 11.5px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            padding: 9px 18px;
-            border-radius: 999px;
-            transition: background 0.2s ease, color 0.2s ease;
-        }
-
-        .filter-pill.active,
-        .filter-pill:hover {
-            background: var(--offwhite);
-            color: var(--black);
-        }
-
-        .shop-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2px;
-            background: var(--line);
-        }
-
-        .product {
-            position: relative;
-            background: var(--black);
-        }
-
-        .product-frame {
-            position: relative;
-            aspect-ratio: 3/4;
-            background: #141414;
-            overflow: hidden;
-        }
-
-        .product-frame .ph-figure {
-            position: absolute;
-            inset: 0;
-            opacity: 0.55;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .product-frame .ph-figure svg {
-            width: 60%;
-            height: 60%;
-        }
-
-        .product-frame img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: grayscale(1);
-            transition: transform .5s ease;
-        }
-
-        .product:hover .product-frame img {
-            transform: scale(1.045);
-        }
-
-        .product-badge {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            font-size: 10px;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            background: var(--offwhite);
-            color: var(--black);
-            padding: 5px 11px;
-            border-radius: 999px;
-            z-index: 2;
-        }
-
-        .product-info {
-            padding: 14px 16px 22px;
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            gap: 12px;
-        }
-
-        .product-name {
-            font-size: 13px;
-            letter-spacing: 0.01em;
-        }
-
-        .product-price {
-            font-size: 13px;
-            color: var(--grey);
-            white-space: nowrap;
-        }
-
-        @media (max-width:980px) {
-            .shop-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        .collections-end {
-            text-align: center;
-            padding: 64px 0 90px;
-        }
-
-        .collections-end .mark {
-            font-size: 20px;
-        }
-
-        /* ---------- footer ---------- */
-        footer {
-            border-top: 1px solid var(--line);
-            padding: 48px 0 36px;
-        }
-
-        .footer-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 18px;
-        }
-
-        .footer-logo {
-            font-family: var(--display);
-            font-weight: 700;
-            font-size: 16px;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 26px;
-            font-size: 12px;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--grey);
-        }
-
-        .footer-links a:hover {
-            color: var(--offwhite);
-        }
-
-        .footer-bottom {
-            margin-top: 32px;
-            padding-top: 20px;
-            border-top: 1px solid var(--line);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 11px;
-            letter-spacing: 0.06em;
-            color: var(--grey);
-            text-transform: uppercase;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        @media (max-width:600px) {
-            .footer-links {
-                gap: 16px;
-                flex-wrap: wrap;
-            }
-        }
-
-        /* reveal-on-scroll */
-        .reveal {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-
-        .reveal.in {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style>
+</style>
 </head>
-
 <body>
 
-    <header>
-        <div class="wrap nav">
-            <div class="nav-left">
-                <button class="nav-burger" aria-label="Open menu">
-                    <span></span><span></span>
-                </button>
-                <nav class="nav-links">
-                    <a href="#shop">Shop</a>
-                    <a href="#shop">Gothic</a>
-                    <a href="#shop">All</a>
-                </nav>
-            </div>
-            <a href="#top" class="nav-logo">FITSBYMESH</a>
-            <div class="nav-right">
-                <button class="icon-btn" aria-label="Search">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.6">
-                        <circle cx="11" cy="11" r="7" />
-                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    </svg>
-                </button>
-                <button class="icon-btn" aria-label="Bag">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.6">
-                        <path d="M6 8h12l-1 13H7L6 8z" />
-                        <path d="M9 8a3 3 0 016 0" />
-                    </svg>
-                </button>
-            </div>
+<header>
+  <div class="wrap nav">
+    <div class="nav-left">
+      <button class="nav-burger" aria-label="Open menu">
+        <span></span><span></span>
+      </button>
+      <nav class="nav-links">
+        <a href="#shop">Shop</a>
+        <a href="#shop">Gothic</a>
+        <a href="#shop">All</a>
+      </nav>
+    </div>
+    <a href="#top" class="nav-logo">FITSBYMESH</a>
+    <div class="nav-right">
+      <button class="icon-btn" aria-label="Search">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <button class="icon-btn" aria-label="Bag">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 8h12l-1 13H7L6 8z"/><path d="M9 8a3 3 0 016 0"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg-fallback"></div>
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">FITSBYMESH</h1>
+      <div class="hero-sub">Cut dark. Worn heavy.</div>
+      <div class="hero-marks mark-row">
+        <span class="mark">†</span>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <span class="hero-scroll-line"></span>
+    </div>
+  </section>
+
+  <!-- COLLECTIONS -->
+  <section class="collections" id="shop">
+    <div class="wrap">
+      <div class="col-head reveal">
+        <h2 class="col-title">All Collections</h2>
+        <span class="col-count">12 pieces</span>
+      </div>
+      <div class="filter-row reveal">
+        <button class="filter-pill active">All</button>
+        <button class="filter-pill">Gothic</button>
+        <button class="filter-pill">Outerwear</button>
+        <button class="filter-pill">Knitwear</button>
+        <button class="filter-pill">Footwear</button>
+      </div>
+    </div>
+
+    <div class="shop-grid wrap" style="padding-left:0; padding-right:0; max-width:1400px;">
+
+      <div class="product reveal">
+        <div class="product-frame">
+          <span class="product-badge">New</span>
+          <div class="ph-figure"><svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg"><ellipse cx="100" cy="55" rx="36" ry="44" fill="#333"/><path d="M45 320 C45 175 62 105 100 95 C138 105 155 175 155 320 Z" fill="#333"/></svg></div>
         </div>
-    </header>
-
-    <main id="top">
-
-        <!-- HERO -->
-        <section class="hero">
-            <div class="hero-bg-fallback"></div>
-            <div class="hero-bg"></div>
-            <div class="hero-content">
-                <h1 class="hero-title">FITSBYMESH</h1>
-                <div class="hero-sub">Cut dark. Worn heavy.</div>
-                <div class="hero-marks mark-row">
-                    <span class="mark">†</span>
-                </div>
-            </div>
-            <div class="hero-scroll">
-                <span>Scroll</span>
-                <span class="hero-scroll-line"></span>
-            </div>
-        </section>
-
-        <!-- COLLECTIONS -->
-        <section class="collections" id="shop">
-            <div class="wrap">
-                <div class="col-head reveal">
-                    <h2 class="col-title">All Collections</h2>
-                    <span class="col-count">12 pieces</span>
-                </div>
-                <div class="filter-row reveal">
-                    <button class="filter-pill active">All</button>
-                    <button class="filter-pill">Gothic</button>
-                    <button class="filter-pill">Outerwear</button>
-                    <button class="filter-pill">Knitwear</button>
-                    <button class="filter-pill">Footwear</button>
-                </div>
-            </div>
-
-            <div class="shop-grid wrap" style="padding-left:0; padding-right:0; max-width:1400px;">
-
-                <div class="product reveal">
-                    <div class="product-frame">
-                        <span class="product-badge">New</span>
-                        <div class="ph-figure"><svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
-                                <ellipse cx="100" cy="55" rx="36" ry="44" fill="#333" />
-                                <path d="M45 320 C45 175 62 105 100 95 C138 105 155 175 155 320 Z" fill="#333" />
-                            </svg></div>
-                    </div>
-                    <div class="product-info">
-                        <span class="product-name">Long Gothic Trench</span>
-                        <span class="product-price">$340</span>
-                    </div>
-                </div>
-
-                <div class="product reveal">
-                    <div class="product-frame">
-                        <div class="ph-figure"><svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
-                                <ellipse cx="100" cy="50" rx="32" ry="40" fill="#2e2e2e" />
-                                <path d="M55 320 C55 185 68 115 100 105 C132 115 145 185 145 320 Z" fill="#2e2e2e" />
-                            </svg></div>
-                    </div>
-                    <div class="product-info">
-                        <span class="product-name">Faux Leather Biker</span>
-                        <span class="product-price">$260</span>
-                    </div>
-                </div>
-
-                <div class="product reveal">
-                    <div class="product-frame">
-                        <span class="product-badge">Low Stock</span>
-                        <div class="ph-figure"><svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="40" y="20" width="140" height="140" rx="6" fill="#2a2a2a" />
-                            </svg></div>
-                    </div>
-                    <div class="product-info">
-                        <span class="product-name">Raw Hem Cargo</span>
-                        <span class="product-price">$185</span>
-                    </div>
-                </div>
-
-                <div class="product reveal">
-                    <div class="product-frame">
-                        <div class="ph-figure"><svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
-                                <ellipse cx="100" cy="50" rx="30" ry="36" fill="#262626" />
-                                <rect x="60" y="80" width="80" height="180" rx="10" fill="#262626" />
-                            </svg></div>
-                    </div>
-                    <div class="product-info">
-                        <span class="product-name">Ribbed Turtleneck</span>
-                        <span class="product-price">$95</span>
-                    </div>
-                </div>
-
-                <div class="product reveal">
-                    <div class="product-frame">
-                        <div class="ph-figure"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M55 180 L55 75 Q55 35 100 35 Q145 35 145 75 L145 180 Z" fill="#272727" />
-                            </svg></div>
-                    </div>
-                    <div class="product-info">
-                        <span class="product-name">Studio Combat Boot</span>
-                        <span class="product-price">$220</span>
-                    </div>
-                </div>
-
-                <div class="product reveal">
-                    <div class="product-frame">
-                        <div class="ph-figure"><svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
-                                <ellipse cx="100" cy="55" rx="34" ry="42" fill="#2c2c2c" />
-                                <path d="M48 320 C48 180 64 108 100 98 C136 108 152 180 152 320 Z" fill="#2c2c2c" />
-                            </svg></div>
-                    </div>
-                    <div class="product-info">
-                        <span class="product-name">Oversized Wool Coat</span>
-                        <span class="product-price">$310</span>
-                    </div>
-                </div>
-
-                <div class="product reveal">
-                    <div class="product-frame">
-                        <span class="product-badge">New</span>
-                        <div class="ph-figure"><svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="40" y="20" width="140" height="140" rx="8" fill="#252525" />
-                            </svg></div>
-                    </div>
-                    <div class="product-info">
-                        <span class="product-name">Straight Leg Denim</span>
-                        <span class="product-price">$140</span>
-                    </div>
-                </div>
-
-                <div class="product reveal">
-                    <div class="product-frame">
-                        <div class="ph-figure"><svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
-                                <ellipse cx="100" cy="48" rx="30" ry="36" fill="#222" />
-                                <rect x="58" y="78" width="84" height="190" rx="12" fill="#222" />
-                            </svg></div>
-                    </div>
-                    <div class="product-info">
-                        <span class="product-name">Boxy Knit Vest</span>
-                        <span class="product-price">$110</span>
-                    </div>
-                </div>
-
-                <div class="product reveal">
-                    <div class="product-frame">
-                        <div class="ph-figure"><svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
-                                <ellipse cx="100" cy="52" rx="33" ry="41" fill="#2a2a2a" />
-                                <path d="M48 320 C48 178 64 110 100 100 C136 110 152 178 152 320 Z" fill="#2a2a2a" />
-                            </svg></div>
-                    </div>
-                    <div class="product-info">
-                        <span class="product-name">Chained Hem Coat</span>
-                        <span class="product-price">$295</span>
-                    </div>
-                </div>
-
-                <div class="product reveal">
-                    <div class="product-frame">
-                        <span class="product-badge">New</span>
-                        <div class="ph-figure"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M60 180 L60 80 Q60 40 100 40 Q140 40 140 80 L140 180 Z" fill="#242424" />
-                            </svg></div>
-                    </div>
-                    <div class="product-info">
-                        <span class="product-name">Buckled Platform Boot</span>
-                        <span class="product-price">$240</span>
-                    </div>
-                </div>
-
-                <div class="product reveal">
-                    <div class="product-frame">
-                        <div class="ph-figure"><svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="40" y="20" width="140" height="140" rx="6" fill="#272727" />
-                            </svg></div>
-                    </div>
-                    <div class="product-info">
-                        <span class="product-name">Wide Leg Cargo</span>
-                        <span class="product-price">$165</span>
-                    </div>
-                </div>
-
-                <div class="product reveal">
-                    <div class="product-frame">
-                        <div class="ph-figure"><svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
-                                <ellipse cx="100" cy="50" rx="31" ry="38" fill="#252525" />
-                                <rect x="58" y="80" width="84" height="180" rx="10" fill="#252525" />
-                            </svg></div>
-                    </div>
-                    <div class="product-info">
-                        <span class="product-name">Cross Knit Sweater</span>
-                        <span class="product-price">$120</span>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="collections-end reveal">
-                <span class="mark">†</span>
-            </div>
-        </section>
-
-    </main>
-
-    <footer>
-        <div class="wrap">
-            <div class="footer-row">
-                <div class="footer-logo">FITSBYMESH</div>
-                <div class="footer-links">
-                    <a href="#shop">Shop</a>
-                    <a href="#">Shipping</a>
-                    <a href="#">Returns</a>
-                    <a href="#">Contact</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <span>© 2026 FITSBYMESH</span>
-                <span class="mark">†</span>
-            </div>
+        <div class="product-info">
+          <span class="product-name">Long Gothic Trench</span>
+          <span class="product-price">$340</span>
         </div>
-    </footer>
+      </div>
 
-    <script>
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(e => {
-                if (e.isIntersecting) {
-                    e.target.classList.add('in');
-                    observer.unobserve(e.target);
-                }
-            });
-        }, { threshold: 0.12 });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+      <div class="product reveal">
+        <div class="product-frame">
+          <div class="ph-figure"><svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg"><ellipse cx="100" cy="50" rx="32" ry="40" fill="#2e2e2e"/><path d="M55 320 C55 185 68 115 100 105 C132 115 145 185 145 320 Z" fill="#2e2e2e"/></svg></div>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Faux Leather Biker</span>
+          <span class="product-price">$260</span>
+        </div>
+      </div>
 
-        document.querySelector('.nav-burger').addEventListener('click', () => {
-            const links = document.querySelector('.nav-links');
-            if (window.innerWidth <= 860) {
-                const isOpen = links.style.display === 'flex';
-                links.style.display = isOpen ? 'none' : 'flex';
-                links.style.position = 'absolute';
-                links.style.top = '64px';
-                links.style.left = '0';
-                links.style.right = '0';
-                links.style.flexDirection = 'column';
-                links.style.background = '#0a0a0a';
-                links.style.padding = '24px 32px';
-                links.style.borderBottom = '1px solid rgba(245,245,242,0.16)';
-                links.style.gap = '20px';
-            }
-        });
+      <div class="product reveal">
+        <div class="product-frame">
+          <span class="product-badge">Low Stock</span>
+          <div class="ph-figure"><svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg"><rect x="40" y="20" width="140" height="140" rx="6" fill="#2a2a2a"/></svg></div>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Raw Hem Cargo</span>
+          <span class="product-price">$185</span>
+        </div>
+      </div>
 
-        document.querySelectorAll('.filter-pill').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-            });
-        });
-    </script>
+      <div class="product reveal">
+        <div class="product-frame">
+          <div class="ph-figure"><svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg"><ellipse cx="100" cy="50" rx="30" ry="36" fill="#262626"/><rect x="60" y="80" width="80" height="180" rx="10" fill="#262626"/></svg></div>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Ribbed Turtleneck</span>
+          <span class="product-price">$95</span>
+        </div>
+      </div>
+
+      <div class="product reveal">
+        <div class="product-frame">
+          <div class="ph-figure"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M55 180 L55 75 Q55 35 100 35 Q145 35 145 75 L145 180 Z" fill="#272727"/></svg></div>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Studio Combat Boot</span>
+          <span class="product-price">$220</span>
+        </div>
+      </div>
+
+      <div class="product reveal">
+        <div class="product-frame">
+          <div class="ph-figure"><svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg"><ellipse cx="100" cy="55" rx="34" ry="42" fill="#2c2c2c"/><path d="M48 320 C48 180 64 108 100 98 C136 108 152 180 152 320 Z" fill="#2c2c2c"/></svg></div>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Oversized Wool Coat</span>
+          <span class="product-price">$310</span>
+        </div>
+      </div>
+
+      <div class="product reveal">
+        <div class="product-frame">
+          <span class="product-badge">New</span>
+          <div class="ph-figure"><svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg"><rect x="40" y="20" width="140" height="140" rx="8" fill="#252525"/></svg></div>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Straight Leg Denim</span>
+          <span class="product-price">$140</span>
+        </div>
+      </div>
+
+      <div class="product reveal">
+        <div class="product-frame">
+          <div class="ph-figure"><svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg"><ellipse cx="100" cy="48" rx="30" ry="36" fill="#222"/><rect x="58" y="78" width="84" height="190" rx="12" fill="#222"/></svg></div>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Boxy Knit Vest</span>
+          <span class="product-price">$110</span>
+        </div>
+      </div>
+
+      <div class="product reveal">
+        <div class="product-frame">
+          <div class="ph-figure"><svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg"><ellipse cx="100" cy="52" rx="33" ry="41" fill="#2a2a2a"/><path d="M48 320 C48 178 64 110 100 100 C136 110 152 178 152 320 Z" fill="#2a2a2a"/></svg></div>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Chained Hem Coat</span>
+          <span class="product-price">$295</span>
+        </div>
+      </div>
+
+      <div class="product reveal">
+        <div class="product-frame">
+          <span class="product-badge">New</span>
+          <div class="ph-figure"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M60 180 L60 80 Q60 40 100 40 Q140 40 140 80 L140 180 Z" fill="#242424"/></svg></div>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Buckled Platform Boot</span>
+          <span class="product-price">$240</span>
+        </div>
+      </div>
+
+      <div class="product reveal">
+        <div class="product-frame">
+          <div class="ph-figure"><svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg"><rect x="40" y="20" width="140" height="140" rx="6" fill="#272727"/></svg></div>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Wide Leg Cargo</span>
+          <span class="product-price">$165</span>
+        </div>
+      </div>
+
+      <div class="product reveal">
+        <div class="product-frame">
+          <div class="ph-figure"><svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg"><ellipse cx="100" cy="50" rx="31" ry="38" fill="#252525"/><rect x="58" y="80" width="84" height="180" rx="10" fill="#252525"/></svg></div>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Cross Knit Sweater</span>
+          <span class="product-price">$120</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="collections-end reveal">
+      <span class="mark">†</span>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-row">
+      <div class="footer-logo">FITSBYMESH</div>
+      <div class="footer-links">
+        <a href="#shop">Shop</a>
+        <a href="#">Shipping</a>
+        <a href="#">Returns</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 FITSBYMESH</span>
+      <span class="mark">†</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  document.querySelector('.nav-burger').addEventListener('click', () => {
+    const links = document.querySelector('.nav-links');
+    if (window.innerWidth <= 860) {
+      const isOpen = links.style.display === 'flex';
+      links.style.display = isOpen ? 'none' : 'flex';
+      links.style.position = 'absolute';
+      links.style.top = '64px';
+      links.style.left = '0';
+      links.style.right = '0';
+      links.style.flexDirection = 'column';
+      links.style.background = '#0a0a0a';
+      links.style.padding = '24px 32px';
+      links.style.borderBottom = '1px solid rgba(245,245,242,0.16)';
+      links.style.gap = '20px';
+    }
+  });
+
+  document.querySelectorAll('.filter-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
 
 </body>
-
 </html>
